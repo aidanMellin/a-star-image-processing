@@ -1,0 +1,33 @@
+Began with basic outline.
+    - Convert the mpp.txt
+    - Open the image
+    - Reprioritized given list of terrain with colors
+
+Took a while to figure out how I wanted to store the data that would be involved with the decision making. First I was storing everything in one big data array,
+where the scheme was something like
+[(x,y), distance from parent node, heuristic value]
+
+But then I realized that I was actually calculating both the distance and the heuristics wrong. 
+I needed to implement 3D Distance calculating with all x, y, and z values as opposed to only worrying about the Z values (stupid, I know)
+
+Then I had to figure out how to implement the heuristic, where originally I was just using the terrain type as a modifier and not taking into account the distance 
+from the target. I fixed this by multiplying the terrain modifier into the distance between the x and y values (easiest ones to grab).
+
+Later I realized that it was sub-optimal to only have the modifiers for the terrain type be multiples of 1 (i.e. 1-10 with Out of Bounds at infinity), so I increased
+the heuristic value originally to up to 3 digits, with the Swamp modifier being registered at 999. This caused key errors when calculating for some reason
+and I didn't feel like figuring out why, so I tamped back the numbers to more reasonable values -- the ones you can see now.
+
+Then it was a question of actually implementing the A* algorithm. This wasn't particularly hard except for I was still having issues with the data storage itself. It
+was at this point that I realized I should have a lookup table of the heuristic values with the (x,y) coordinates because these heuristics were static and wouldn't
+have to be computed multiple times. This led to a more reasonable dataArray which is simply a dict of the coordinates in a tuple as a key, and the value containing a 
+list of neighbors with their coordinates and distance from the parent node (which allowed me to use the Queues.priorityQueue instead of having to build my own from
+scratch).
+
+Then I had to deal with the storage stuff and focusing on maximizing total points I could get, because im gonna be honest I didn't know
+how well this would do on your test cases. (Are you still reading this?). There was talk about points being deducted for time to run, but it seemed to fluctuate
+for me, plus I had to just do minor cleanups and other stuff -- like doing this write up!
+
+Finally, as for the potential discrepancy with the distance calculated, I had it calculating the straight distance between every point in the path taken (adding between
+each node). The testcases had obviously wrong path distances anyways, but I thought I would just include this.
+
+Also, I don't quite know what was going on with the pixel values for Strip Elevation but I had to add 3 separate entries for some reason.
